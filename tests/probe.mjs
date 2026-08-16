@@ -183,12 +183,12 @@ try {
 
   // ---------- NLU PIPELINE (content script target pinned explicitly) ----------
   await page.bringToFront();
-  const targetPin = await popup.evaluate(async (sitePattern) => {
-    const tabs = await chrome.tabs.query({ url: sitePattern });
-    if (!tabs[0]) return 'no-tab';
+  const targetPin = await popup.evaluate(async () => {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tabs || !tabs[0] || typeof tabs[0].id !== 'number') return 'no-tab';
     window.__aiTargetTab = tabs[0].id;
     return 'pinned:' + tabs[0].id;
-  }, SITE_PAGE + '*');
+  });
   check('probe pinned the fixture tab as NLU target', targetPin.startsWith('pinned:'), targetPin);
   const ping = await popup.evaluate(async () => {
     const id = window.__aiTargetTab;
