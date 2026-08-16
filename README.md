@@ -2,7 +2,7 @@
 
 A tiny local page assistant for Chromium browsers (Manifest V3). No network calls, no API keys, no models in the cloud: assistai reads the page you are on and answers with deterministic local heuristics, and keeps a persistent conversation history in extension storage.
 
-Landing page: `https://assistai-xxxx.vercel.app` (placeholder, replaced at deploy time)
+Landing page: `https://assistai-gamma.vercel.app`
 
 ## What it does
 
