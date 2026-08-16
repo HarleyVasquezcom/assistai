@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>assistai — a local page assistant</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+<header class="hd">
+  <h1 data-i18n="appTitle">assistai</h1>
+  <p class="tag" data-i18n="tagline">reads the page and answers locally</p>
+  <span class="badge">LOCAL · OFFLINE</span>
+</header>
+
+<form id="askRow" autocomplete="off">
+  <input id="askInput" type="text" data-i18n="placeholder" placeholder="Ask about this page…" maxlength="200">
+  <button id="sendBtn" type="submit" data-i18n="sendBtn">Ask</button>
+</form>
+
+<div id="quickRow">
+  <button class="tick" id="qBrief" data-cmd="brief" data-i18n="qBrief">Brief</button>
+  <button class="tick" id="qKeywords" data-cmd="keywords" data-i18n="qKeywords">Keywords</button>
+  <button class="tick" id="qEntities" data-cmd="entities" data-i18n="qEntities">Entities</button>
+</div>
+
+<div id="convo" aria-live="polite"></div>
+<div id="status" role="status"></div>
+
+<footer class="foot">
+  <button id="clearBtn" class="ghost" data-i18n="clearBtn">Clear</button>
+  <select id="langSel" title="Language">
+    <option value="en">English</option>
+    <option value="es">Español</option>
+    <option value="fr">Français</option>
+    <option value="pt">Português</option>
+    <option value="it">Italiano</option>
+    <option value="de">Deutsch</option>
+  </select>
+  <span class="cr">
+    <a data-i18n="credit" href="https://www.linkedin.com/in/harleyvasquez/" target="_blank" rel="noreferrer">Built by Harley Vásquez</a>
+  </span>
+</footer>
+
+<script src="i18n.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>

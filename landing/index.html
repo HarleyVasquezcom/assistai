@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>assistai — a local page assistant</title>
+<style>
+  :root { --inkbg:#0e0d0b; --panel:#161510; --panel2:#1e1c14; --line:#2b2a23; --ink:#f2eee0; --dim:#a09a88; --amber:#f6c445; --amber2:#d9a92e; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--inkbg); color:var(--ink); font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  .wrap { max-width:760px; margin:0 auto; padding:48px 24px 64px; }
+  .badge { display:inline-block; border:1px solid var(--amber2); border-radius:999px; color:var(--amber); padding:4px 12px; font-size:12px; letter-spacing:.14em; }
+  h1 { font-size:40px; letter-spacing:.05em; margin:18px 0 6px; }
+  .tag { color:var(--dim); font-size:18px; margin:0 0 26px; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:30px; }
+  .chip { background:var(--amber); color:#14120a; border-radius:999px; padding:6px 14px; font-weight:700; font-size:13px; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin-bottom:22px; }
+  .panel h2 { margin:0 0 10px; font-size:16px; color:var(--amber); }
+  ul { margin:0; padding-left:20px; }
+  li { margin:6px 0; }
+  .ziprow { display:flex; align-items:center; gap:14px; margin-bottom:26px; }
+  .dl { background:var(--amber); color:#14120a; border-radius:10px; padding:12px 22px; font-weight:700; text-decoration:none; font-size:15px; }
+  .dl:hover { background:var(--amber2); }
+  .zipname { color:var(--dim); font-size:13px; }
+  .honest { color:var(--dim); font-size:14px; border-left:3px solid var(--amber2); padding-left:14px; margin:18px 0 26px; }
+  .controls { margin:26px 0; }
+  select { background:var(--panel2); border:1px solid var(--line); color:var(--ink); border-radius:8px; padding:7px 10px; }
+  footer { border-top:1px solid var(--line); margin-top:40px; padding-top:18px; color:var(--dim); font-size:14px; }
+  footer a { color:inherit; text-decoration:none; }
+  footer a:hover { color:var(--amber); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="badge">LOCAL · OFFLINE · DETERMINISTIC</span>
+  <h1 data-i18n="heroTitle">assistai</h1>
+  <p class="tag" data-i18n="tagline">reads the page and answers locally</p>
+
+  <p class="honest" data-i18n="honest">No network calls, no API keys, no models in the cloud. assistai reads the page you are on and replies with deterministic local heuristics — summary by word density, keywords with counts, entities by regex — plus a persistent conversation history.</p>
+
+  <div class="chips">
+    <span class="chip" data-i18n="c1">Summary by word density</span>
+    <span class="chip" data-i18n="c2">Keywords with counts</span>
+    <span class="chip" data-i18n="c3">Emails, URLs, prices, dates</span>
+    <span class="chip" data-i18n="c4">6 languages</span>
+    <span class="chip" data-i18n="c5">Conversation stays on your machine</span>
+  </div>
+
+  <div class="ziprow">
+    <a class="dl" href="assistai.zip" download data-i18n="dl">Download ZIP</a>
+    <span class="zipname">assistai.zip — unpack, load unpacked in chrome://extensions</span>
+  </div>
+
+  <div class="panel">
+    <h2 data-i18n="how">What it does</h2>
+    <ul>
+      <li data-i18n="h1">Type a command — “resumen”, “keywords”, “entities”, “clear” — or use the quick chips in the popup.</li>
+      <li data-i18n="h2">A brief: the three densest sentences of the page, picked by repeated key terms.</li>
+      <li data-i18n="h3">Keywords: the page’s most repeated content words, with counts.</li>
+      <li data-i18n="h4">Entities: emails, URLs, prices and ISO dates found by regex.</li>
+      <li data-i18n="h5">Unknown commands get an honest “I don’t understand” — no invented answers.</li>
+      <li data-i18n="h6">Everything stays in extension storage; nothing leaves the browser.</li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <h2 data-i18n="install">Install</h2>
+    <ul>
+      <li data-i18n="i1">Download assistai.zip and unpack it somewhere permanent.</li>
+      <li data-i18n="i2">Open chrome://extensions, enable Developer mode.</li>
+      <li data-i18n="i3">Click “Load unpacked” and pick the folder (keep the folder after loading).</li>
+      <li data-i18n="i4">Open any page, open the assistai popup, and ask.</li>
+    </ul>
+  </div>
+
+  <div class="controls">
+    <select id="langSel" title="Language">
+      <option value="en">English</option>
+      <option value="es">Español</option>
+      <option value="fr">Français</option>
+      <option value="pt">Português</option>
+      <option value="it">Italiano</option>
+      <option value="de">Deutsch</option>
+    </select>
+  </div>
+
+  <footer>
+    <a data-i18n="credit" href="https://www.linkedin.com/in/harleyvasquez/" target="_blank" rel="noreferrer">Built by Harley Vásquez</a>
+  </footer>
+</div>
+
+<script>
+'use strict';
+const I18N = {
+  en: { heroTitle: 'assistai', tagline: 'reads the page and answers locally', honest: 'No network calls, no API keys, no models in the cloud. assistai reads the page you are on and replies with deterministic local heuristics — summary by word density, keywords with counts, entities by regex — plus a persistent conversation history.', c1: 'Summary by word density', c2: 'Keywords with counts', c3: 'Emails, URLs, prices, dates', c4: '6 languages', c5: 'Conversation stays on your machine', dl: 'Download ZIP', how: 'What it does', h1: 'Type a command — “resumen”, “keywords”, “entities”, “clear” — or use the quick chips in the popup.', h2: 'A brief: the three densest sentences of the page, picked by repeated key terms.', h3: 'Keywords: the page’s most repeated content words, with counts.', h4: 'Entities: emails, URLs, prices and ISO dates found by regex.', h5: 'Unknown commands get an honest “I don’t understand” — no invented answers.', h6: 'Everything stays in extension storage; nothing leaves the browser.', install: 'Install', i1: 'Download assistai.zip and unpack it somewhere permanent.', i2: 'Open chrome://extensions, enable Developer mode.', i3: 'Click “Load unpacked” and pick the folder (keep the folder after loading).', i4: 'Open any page, open the assistai popup, and ask.', credit: 'Built by Harley Vásquez' },
+  es: { heroTitle: 'assistai', tagline: 'lee la página y responde en local', honest: 'Sin llamadas de red, sin claves de API, sin modelos en la nube. assistai lee la página que tienes abierta y responde con heurísticas locales deterministas — resumen por densidad de palabras, palabras clave con conteos, entidades por regex — y un historial de conversación persistente.', c1: 'Resumen por densidad de palabras', c2: 'Palabras clave con conteos', c3: 'Emails, URLs, precios y fechas', c4: '6 idiomas', c5: 'La conversación se queda en tu máquina', dl: 'Descargar ZIP', how: 'Qué hace', h1: 'Escribe un comando — “resumen”, “palabras clave”, “entidades”, “limpiar” — o usa los botones rápidos del popup.', h2: 'Un resumen: las tres frases más densas de la página, elegidas por términos repetidos.', h3: 'Palabras clave: las palabras de contenido más repetidas, con conteos.', h4: 'Entidades: emails, URLs, precios y fechas ISO encontradas por regex.', h5: 'Los comandos desconocidos reciben un honesto “no entiendo” — sin respuestas inventadas.', h6: 'Todo se queda en el almacenamiento de la extensión; nada sale del navegador.', install: 'Instalación', i1: 'Descarga assistai.zip y descomprímelo en un lugar permanente.', i2: 'Abre chrome://extensions y activa el modo desarrollador.', i3: 'Haz clic en “Cargar descomprimida” y elige la carpeta (consérvala después de cargarla).', i4: 'Abre cualquier página, abre el popup de assistai y pregunta.', credit: 'Creado por Harley Vásquez' },
+  fr: { heroTitle: 'assistai', tagline: 'lit la page et répond en local', honest: 'Aucun appel réseau, aucune clé API, aucun modèle dans le cloud. assistai lit la page que vous consultez et répond avec des heuristiques locales déterministes — résumé par densité de mots, mots-clés avec compteurs, entités par regex — plus un historique de conversation persistant.', c1: 'Résumé par densité de mots', c2: 'Mots-clés avec compteurs', c3: 'Courriels, URL, prix, dates', c4: '6 langues', c5: 'La conversation reste sur votre machine', dl: 'Télécharger le ZIP', how: 'Ce qu’il fait', h1: 'Tapez une commande — « résumé », « mots-clés », « entités », « effacer » — ou utilisez les raccourcis du popup.', h2: 'Un résumé : les trois phrases les plus denses de la page, choisies par termes répétés.', h3: 'Mots-clés : les mots de contenu les plus répétés, avec compteurs.', h4: 'Entités : courriels, URL, prix et dates ISO trouvés par regex.', h5: 'Les commandes inconnues reçoivent un honnête « je ne comprends pas » — aucune réponse inventée.', h6: 'Tout reste dans le stockage de l’extension ; rien ne quitte le navigateur.', install: 'Installation', i1: 'Téléchargez assistai.zip et décompressez-le dans un emplacement permanent.', i2: 'Ouvrez chrome://extensions et activez le mode développeur.', i3: 'Cliquez sur « Charger l’extension non empaquetée » et choisissez le dossier (conservez-le ensuite).', i4: 'Ouvrez une page, ouvrez le popup assistai et demandez.', credit: 'Créé par Harley Vásquez' },
+  pt: { heroTitle: 'assistai', tagline: 'lê a página e responde localmente', honest: 'Sem chamadas de rede, sem chaves de API, sem modelos na nuvem. O assistai lê a página que você está vendo e responde com heurísticas locais determinísticas — resumo por densidade de palavras, palavras-chave com contagens, entidades por regex — além de um histórico de conversa persistente.', c1: 'Resumo por densidade de palavras', c2: 'Palavras-chave com contagens', c3: 'E-mails, URLs, preços e datas', c4: '6 idiomas', c5: 'A conversa fica na sua máquina', dl: 'Baixar ZIP', how: 'O que faz', h1: 'Digite um comando — “resumo”, “palavras-chave”, “entidades”, “limpar” — ou use os atalhos do popup.', h2: 'Um resumo: as três frases mais densas da página, escolhidas por termos repetidos.', h3: 'Palavras-chave: as palavras de conteúdo mais repetidas, com contagens.', h4: 'Entidades: e-mails, URLs, preços e datas ISO encontrados por regex.', h5: 'Comandos desconhecidos recebem um honesto “não entendi” — sem respostas inventadas.', h6: 'Tudo fica no armazenamento da extensão; nada sai do navegador.', install: 'Instalação', i1: 'Baixe o assistai.zip e descompacte-o em um lugar permanente.', i2: 'Abra chrome://extensions e ative o modo desenvolvedor.', i3: 'Clique em “Carregar sem compactação” e escolha a pasta (mantenha-a depois).', i4: 'Abra uma página, abra o popup do assistai e pergunte.', credit: 'Criado por Harley Vásquez' },
+  it: { heroTitle: 'assistai', tagline: 'legge la pagina e risponde in locale', honest: 'Nessuna chiamata di rete, nessuna chiave API, nessun modello nel cloud. assistai legge la pagina che stai consultando e risponde con euristiche locali deterministiche — riassunto per densità di parole, parole chiave con conteggi, entità con regex — più una cronologia conversazioni persistente.', c1: 'Riassunto per densità di parole', c2: 'Parole chiave con conteggi', c3: 'Email, URL, prezzi, date', c4: '6 lingue', c5: 'La conversazione resta sulla tua macchina', dl: 'Scarica ZIP', how: 'Cosa fa', h1: 'Digita un comando — “riassunto”, “parole chiave”, “entità”, “cancella” — oppure usa i pulsanti rapidi del popup.', h2: 'Un riassunto: le tre frasi più dense della pagina, scelte per termini ripetuti.', h3: 'Parole chiave: le parole di contenuto più ripetute, con conteggi.', h4: 'Entità: email, URL, prezzi e date ISO trovate con regex.', h5: 'I comandi sconosciuti ricevono un onesto “non capisco” — nessuna risposta inventata.', h6: 'Tutto resta nello storage dell’estensione; nulla esce dal browser.', install: 'Installazione', i1: 'Scarica assistai.zip e decomprimilo in un posto permanente.', i2: 'Apri chrome://extensions e attiva la modalità sviluppatore.', i3: 'Clicca su “Carica estensione non pacchettizzata” e scegli la cartella (conservala).', i4: 'Apri una pagina, apri il popup di assistai e chiedi.', credit: 'Creato da Harley Vásquez' },
+  de: { heroTitle: 'assistai', tagline: 'liest die Seite und antwortet lokal', honest: 'Keine Netzwerkaufrufe, keine API-Schlüssel, keine Modelle in der Cloud. assistai liest die Seite, auf der du bist, und antwortet mit deterministischen lokalen Heuristiken — Zusammenfassung nach Worthäufigkeit, Stichwörter mit Zählern, Entitäten per Regex — plus einem dauerhaften Gesprächsverlauf.', c1: 'Zusammenfassung nach Worthäufigkeit', c2: 'Stichwörter mit Zählern', c3: 'E-Mails, URLs, Preise, Daten', c4: '6 Sprachen', c5: 'Das Gespräch bleibt auf deinem Gerät', dl: 'ZIP herunterladen', how: 'Was es tut', h1: 'Tippe einen Befehl — „Zusammenfassung“, „Stichwörter“, „Entitäten“, „löschen“ — oder nutze die Schnellschaltflächen im Popup.', h2: 'Eine Zusammenfassung: die drei dichtesten Sätze der Seite, ausgewählt nach wiederholten Begriffen.', h3: 'Stichwörter: die am häufigsten wiederholten Inhaltswörter der Seite, mit Zählern.', h4: 'Entitäten: per Regex gefundene E-Mails, URLs, Preise und ISO-Daten.', h5: 'Unbekannte Befehle bekommen ein ehrliches „Ich verstehe nicht“ — keine erfundenen Antworten.', h6: 'Alles bleibt im Erweiterungsspeicher; nichts verlässt den Browser.', install: 'Installation', i1: 'Lade assistai.zip herunter und entpacke es an einen dauerhaften Ort.', i2: 'Öffne chrome://extensions und aktiviere den Entwicklermodus.', i3: 'Klicke auf „Entpackte Erweiterung laden“ und wähle den Ordner (behalte ihn).', i4: 'Öffne eine Seite, öffne das assistai-Popup und frage.', credit: 'Erstellt von Harley Vásquez' },
+};
+const LS_KEY = 'ai:landingLang';
+const pick = () => {
+  const stored = localStorage.getItem(LS_KEY);
+  const nav = (navigator.language || 'en').toLowerCase().split('-')[0];
+  return stored || (nav in I18N ? nav : 'en');
+};
+const apply = (code) => {
+  const d = I18N[code] || I18N.en;
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    const k = el.dataset.i18n;
+    if (d[k] == null) return;
+    if (k === 'heroTitle') {
+      el.textContent = d[k];
+      document.title = d[k] + ' — ' + d.tagline;
+    } else {
+      el.textContent = d[k];
+    }
+  });
+  document.documentElement.lang = code;
+};
+document.getElementById('langSel').addEventListener('change', (e) => {
+  localStorage.setItem(LS_KEY, e.target.value);
+  apply(e.target.value);
+});
+apply(pick());
+</script>
+</body>
+</html>
